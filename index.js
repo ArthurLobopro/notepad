@@ -1,12 +1,22 @@
 const textarea = document.querySelector('textarea')
 
+textarea.onblur = () => textarea.focus()
+
 const functions = {
-    'ctrl+s': () => {
-        console.log(textarea.value)
+    save() {
+        ipcRenderer.send('save',{ content: textarea.value })
+    },
+    saveAs() {
+        ipcRenderer.send('save-as',{ content: textarea.value })
     }
+}
+
+const shortcuts = {
+    'ctrl+s': functions.save,
+    'ctrl+shift+s': functions.saveAs
 }
 
 window.onkeydown = event => {
     const func = `${event.ctrlKey ? 'ctrl+' : ''}${event.shiftKey ? "shift+" : ''}${event.key.toLowerCase()}`
-    functions?.[func]?.()
+    shortcuts?.[func]?.()
 }
